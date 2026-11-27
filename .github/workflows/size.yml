@@ -5,8 +5,23 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI_JOB_NUMBER: 1
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v1
-      - uses: andresz1/size-limit-action@v1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '26'
+      - name: Install locked dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build candidate
+        run: yarn build
+      - name: Enforce package size limits
+        run: yarn size
+
+# Superseded PR validation must not hold runner capacity.
+concurrency:
+  group: pr-ci-size.yml-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true

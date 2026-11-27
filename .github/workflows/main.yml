@@ -1,5 +1,5 @@
 name: CI
-on: [push]
+on: [push, pull_request]
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -30,3 +30,8 @@ jobs:
 
       - name: Build
         run: yarn build
+
+# Keep PR updates independent from other PRs and branch builds.
+concurrency:
+  group: pr-ci-main.yml-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true

@@ -72,5 +72,13 @@
   },
   "dependencies": {
     "ethers": "^5.3.1"
+  },
+  "resolutions": {
+    "webpack": "4.47.0",
+    "terser-webpack-plugin": "1.4.6"
+  },
+  "overrides": {
+    "webpack": "4.47.0",
+    "terser-webpack-plugin": "1.4.6"
   }
 }
